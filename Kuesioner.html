@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuesioner Hidup Sehat untuk Penderita Diabetes</title>
+    <style>
+        /* Reset dan gaya dasar */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f1f8e9 0%, #e8f5e9 100%);
+            color: #33691e;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.1);
+            padding: 40px;
+            text-align: center;
+            border: 1px solid #c8e6c9;
+        }
+        
+        h1 {
+            color: #2e7d32;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        h2 {
+            color: #388e3c;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .description {
+            margin-bottom: 30px;
+            color: #558b2f;
+            font-size: 1.1rem;
+        }
+        
+        .disclaimer {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 25px 0;
+            text-align: left;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+            color: #33691e;
+        }
+        
+        .btn {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            margin: 10px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background-color: #43a047;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #a5d6a7;
+        }
+        
+        .health-icon {
+            font-size: 4rem;
+            color: #4caf50;
+            margin-bottom: 20px;
+        }
+        
+        /* Gaya untuk halaman intro */
+        .intro-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .icon-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+            max-width: 500px;
+        }
+        
+        .icon-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background-color: #f1f8e9;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .icon-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .icon-item i {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .icon-item span {
+            font-size: 0.9rem;
+            color: #558b2f;
+            font-weight: 500;
+        }
+        
+        /* Gaya untuk halaman kuesioner */
+        .questionnaire-container {
+            display: none;
+        }
+        
+        .question-container {
+            display: none;
+        }
+        
+        .question-container.active {
+            display: block;
+        }
+        
+        .question-number {
+            color: #4caf50;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+        
+        .question-text {
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            color: #33691e;
+        }
+        
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .option {
+            background-color: #f1f8e9;
+            border: 2px solid #c8e6c9;
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 500px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            color: #33691e;
+        }
+        
+        .option:hover {
+            background-color: #e8f5e9;
+            border-color: #a5d6a7;
+        }
+        
+        .option.selected {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #81c784 0%, #4caf50 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        /* Gaya untuk halaman hasil */
+        .result-container {
+            display: none;
+        }
+        
+        .result-title {
+            color: #2e7d32;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+        
+        .result-description {
+            background-color: #f1f8e9;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: left;
+            border: 1px solid #c8e6c9;
+        }
+        
+        .recommendation {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .score-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2e7d32;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+        }
+        
+        .recommendation-list {
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .recommendation-list h3 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+        
+        .recommendation-list ul {
+            padding-left: 20px;
+        }
+        
+        .recommendation-list li {
+            margin-bottom: 8px;
+        }
+        
+        /* Dekorasi sayuran */
+        .vegetable-decoration {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .broccoli {
+            top: 10%;
+            left: 5%;
+            transform: rotate(30deg);
+        }
+        
+        .carrot {
+            top: 15%;
+            right: 5%;
+            transform: rotate(-20deg);
+        }
+        
+        .leaf {
+            bottom: 10%;
+            left: 10%;
+            transform: rotate(-15deg);
+        }
+        
+        .apple {
+            bottom: 15%;
+            right: 8%;
+            transform: rotate(25deg);
+        }
+        
+        /* Responsif untuk perangkat mobile */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.5rem;
+            }
+            
+            .container {
+                padding: 25px;
+            }
+            
+            .description {
+                font-size: 1rem;
+            }
+            
+            .question-text {
+                font-size: 1.2rem;
+            }
+            
+            .navigation {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                margin: 5px 0;
+            }
+            
+            .icon-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .vegetable-decoration {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.7rem;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 1rem;
+            }
+            
+            .icon-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Dekorasi sayuran -->
+    <div class="vegetable-decoration broccoli">🥦</div>
+    <div class="vegetable-decoration carrot">🥕</div>
+    <div class="vegetable-decoration leaf">🥬</div>
+    <div class="vegetable-decoration apple">🍎</div>
+
+    <!-- Halaman Intro -->
+    <div class="container intro-container active" id="intro-page">
+        <div class="health-icon">
+            <i class="fas fa-heartbeat"></i>
+        </div>
+        <h1>Kuesioner Hidup Sehat untuk Penderita Diabetes</h1>
+        
+        <div class="description">
+            <p>Kuesioner ini dirancang untuk membantu Anda mengevaluasi kebiasaan hidup sehat dalam mengelola diabetes. Dengan menjawab pertanyaan-pertanyaan berikut, Anda dapat mengetahui sejauh mana gaya hidup Anda mendukung pengelolaan diabetes.</p>
+            
+            <div class="icon-grid">
+                <div class="icon-item">
+                    <i class="fas fa-apple-alt" style="color: #4caf50;"></i>
+                    <span>Pola Makan Sehat</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-running" style="color: #4caf50;"></i>
+                    <span>Aktivitas Fisik</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-pills" style="color: #4caf50;"></i>
+                    <span>Pengobatan Teratur</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-heart" style="color: #4caf50;"></i>
+                    <span>Kesehatan Jantung</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-weight" style="color: #4caf50;"></i>
+                    <span>Berat Badan Ideal</span>
+                </div>
+                <div class="icon-item">
+                    <i class="fas fa-stethoscope" style="color: #4caf50;"></i>
+                    <span>Pemeriksaan Rutin</span>
+                </div>
+            </div>
+            
+            <div class="disclaimer">
+                <p><strong>Penting:</strong> Kuesioner ini hanya bertujuan sebagai alat evaluasi diri dan <strong>bukan merupakan saran medis</strong>. Hasil dari kuesioner ini tidak dapat menggantikan konsultasi dengan profesional kesehatan. Selalu konsultasikan dengan dokter Anda mengenai pengelolaan diabetes.</p>
+            </div>
+            
+            <p>Kuesioner ini terdiri dari 8 pertanyaan yang dapat diselesaikan dalam waktu sekitar 5-10 menit.</p>
+        </div>
+        
+        <button class="btn" id="start-btn">Mulai Kuesioner</button>
+    </div>
+
+    <!-- Halaman Kuesioner -->
+    <div class="container questionnaire-container" id="questionnaire-page">
+        <div class="progress-bar">
+            <div class="progress" id="progress-bar"></div>
+        </div>
+        
+        <!-- Pertanyaan 1 -->
+        <div class="question-container active" id="question-1">
+            <div class="question-number">Pertanyaan 1 dari 8</div>
+            <div class="question-text">Seberapa sering Anda memeriksa kadar gula darah Anda?</div>
+            
+            <div class="options-container">
+                <div class="option" data-value="4">Setiap hari sesuai anjuran dokter</div>
+                <div class="option" data-value="3">Beberapa kali dalam seminggu</div>
+                <div class="option" data-value="2">Sekali seminggu</div>
+                <div class="option" data-value="1">Hanya ketika merasa tidak enak badan</div>
+                <div class="option" data-value="0">Jarang atau tidak pernah</div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prev-btn-1" style="visibility: hidden;">Kembali ke Intro</button>
+                <button class="btn" id="next-btn-1">Selanjutnya</button>
+            </div>
+        </div>
+
+        <!-- Pertanyaan 2 -->
+        <div class="question-container" id="question-2">
+            <div class="question-number">Pertanyaan 2 dari 8</div>
+            <div class="question-text">Seberapa baik Anda mengontrol konsumsi karbohidrat dalam makanan sehari-hari?</div>
+            
+            <div class="options-container">
+                <div class="option" data-value="4">Sangat baik, selalu menghitung dan menyesuaikan dengan kebutuhan</div>
+                <div class="option" data-value="3">Cukup baik, biasanya memperhatikan porsi karbohidrat</div>
+                <div class="option" data-value="2">Kadang-kadang memperhatikan</div>
+                <div class="option" data-value="1">Jarang memperhatikan</div>
+                <div class="option" data-value="0">Tidak memperhatikan sama sekali</div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prev-btn-2">Kembali</button>
+                <button class="btn" id="next-btn-2">Selanjutnya</button>
+            </div>
+        </div>
+
+        <!-- Pertanyaan 3 -->
+        <div class="question-container" id="question-3">
+            <div class="question-number">Pertanyaan 3 dari 8</div>
+            <div class="question-text">Seberapa sering Anda mengonsumsi makanan tinggi serat seperti sayuran dan buah-buahan?</div>
+            
+            <div class="options-container">
+                <div class="option" data-value="4">Setiap hari dalam porsi yang cukup</div>
+                <div class="option" data-value="3">Hampir setiap hari</div>
+                <div class="option" data-value="2">Beberapa kali dalam seminggu</div>
+                <div class="option" data-value="1">Jarang</div>
+                <div class="option" data-value="0">Hampir tidak pernah</div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prev-btn-3">Kembali</button>
+                <button class="btn" id="next-btn-3">Selanjutnya</button>
+            </div>
+        </div>
+
+        <!-- Pertanyaan 4 -->
+        <div class="question-container" id="question-4">
+            <div class="question-number">Pertanyaan 4 dari 8</div>
+            <div class="question-text">Seberapa rutin Anda melakukan aktivitas fisik atau olahraga?</div>
+            
+            <div class="options-container">
+                <div class="option" data-value="4">Minimal 30 menit, 5 kali seminggu</div>
+                <div class="option" data-value="3">Minimal 30 menit, 3-4 kali seminggu</div>
+                <div class="option" data-value="2">Sekali atau dua kali seminggu</div>
+                <div class="option" data-value="1">Sangat jarang</div>
+                <div class="option" data-value="0">Tidak pernah</div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prev-btn-4">Kembali</button>
+                <button class="btn" id="next-btn-4">Selanjutnya</button>
+            </div>
+        </div>
+
+        <!-- Pertanyaan 5 -->
+        <div class="question-container" id="question-5">
+            <div class="question-number">Pertanyaan 5 dari 8</div>
+            <div class="question-text">Seberapa baik Anda mengelola stres dalam kehidupan sehari-hari?</div>
+            
+            <div class="options-container">
+                <div class="option" data-value="4">Sangat baik, punya teknik relaksasi yang efektif</div>
+                <div class="option" data-value="3">Cukup baik, biasanya bisa mengatasi stres</div>
+                <div class="option" data-value="2">Kadang-kadang kesulitan mengelola stres</div>
+                <div class="option" data-value="1">Sering merasa kewalahan dengan stres</div>
+                <div class="option" data-value="0">Sangat sulit mengelola stres</div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prev-btn-5">Kembali</button>
+                <button class="btn" id="next-btn-5">Selanjutnya</button>
+            </div>
+        </div>
+
+        <!-- Pertanyaan 6 -->
+        <div class="question-container" id="question-6">
+            <div class="question-number">Pertanyaan 6 dari 8</div>
+            <div class="question-text">Seberapa teratur Anda mengonsumsi obat atau insulin sesuai anjuran dokter?</div>
+            
+            <div class="options-container">
+                <div class="option" data-value="4">Sangat teratur, tidak pernah terlewat</div>
+                <div class="option" data-value="3">Cukup teratur, jarang terlewat</div>
+                <div class="option" data-value="2">Kadang-kadang terlewat</div>
+                <div class="option" data-value="1">Sering terlewat</div>
+                <div class="option" data-value="0">Sangat tidak teratur</div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prev-btn-6">Kembali</button>
+                <button class="btn" id="next-btn-6">Selanjutnya</button>
+            </div>
+        </div>
+
+        <!-- Pertanyaan 7 -->
+        <div class="question-container" id="question-7">
+            <div class="question-number">Pertanyaan 7 dari 8</div>
+            <div class="question-text">Seberapa baik Anda menjaga berat badan ideal?</div>
+            
+            <div class="options-container">
+                <div class="option" data-value="4">Sangat baik, berat badan selalu dalam rentang ideal</div>
+                <div class="option" data-value="3">Cukup baik, berat badan cenderung stabil</div>
+                <div class="option" data-value="2">Kadang-kadang mengalami fluktuasi</div>
+                <div class="option" data-value="1">Sulit menjaga berat badan</div>
+                <div class="option" data-value="0">Tidak memperhatikan berat badan</div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prev-btn-7">Kembali</button>
+                <button class="btn" id="next-btn-7">Selanjutnya</button>
+            </div>
+        </div>
+
+        <!-- Pertanyaan 8 -->
+        <div class="question-container" id="question-8">
+            <div class="question-number">Pertanyaan 8 dari 8</div>
+            <div class="question-text">Seberapa rutin Anda melakukan pemeriksaan kesehatan ke dokter?</div>
+            
+            <div class="options-container">
+                <div class="option" data-value="4">Sangat rutin, sesuai jadwal yang ditentukan dokter</div>
+                <div class="option" data-value="3">Cukup rutin, meski kadang terlambat</div>
+                <div class="option" data-value="2">Hanya ketika ada keluhan</div>
+                <div class="option" data-value="1">Jarang memeriksakan diri</div>
+                <div class="option" data-value="0">Hampir tidak pernah</div>
+            </div>
+            
+            <div class="navigation">
+                <button class="btn btn-secondary" id="prev-btn-8">Kembali</button>
+                <button class="btn" id="submit-btn">Lihat Hasil</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Halaman Hasil -->
+    <div class="container result-container" id="result-page">
+        <div class="health-icon">
+            <i class="fas fa-clipboard-check"></i>
+        </div>
+        <h1 class="result-title">Hasil Kuesioner Hidup Sehat Diabetes</h1>
+        
+        <div class="result-description">
+            <p>Berdasarkan jawaban yang Anda berikan, berikut adalah evaluasi kebiasaan hidup sehat Anda dalam mengelola diabetes:</p>
+            
+            <div id="result-content">
+                <!-- Hasil akan diisi oleh JavaScript -->
+            </div>
+        </div>
+        
+        <div class="recommendation-list" id="recommendation-content">
+            <!-- Rekomendasi akan diisi oleh JavaScript -->
+        </div>
+        
+        <div class="recommendation">
+            <p><strong>Penting:</strong> Hasil ini hanya sebagai panduan evaluasi diri. Untuk pengelolaan diabetes yang optimal, selalu konsultasikan dengan dokter dan tim kesehatan Anda.</p>
+        </div>
+        
+        <button class="btn" id="restart-btn">Mulai Kuesioner Lagi</button>
+    </div>
+
+    <script>
+        // Variabel untuk menyimpan jawaban
+        let answers = [null, null, null, null, null, null, null, null];
+        
+        // Elemen DOM
+        const introPage = document.getElementById('intro-page');
+        const questionnairePage = document.getElementById('questionnaire-page');
+        const resultPage = document.getElementById('result-page');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const progressBar = document.getElementById('progress-bar');
+        
+        // Fungsi untuk menampilkan halaman tertentu
+        function showPage(page) {
+            // Sembunyikan semua halaman
+            introPage.style.display = 'none';
+            questionnairePage.style.display = 'none';
+            resultPage.style.display = 'none';
+            
+            // Tampilkan halaman yang diminta
+            if (page === 'intro') {
+                introPage.style.display = 'block';
+            } else if (page === 'questionnaire') {
+                questionnairePage.style.display = 'block';
+                showQuestion(1);
+            } else if (page === 'result') {
+                resultPage.style.display = 'block';
+                displayResults();
+            }
+        }
+        
+        // Fungsi untuk menampilkan pertanyaan tertentu
+        function showQuestion(questionNumber) {
+            // Sembunyikan semua pertanyaan
+            document.querySelectorAll('.question-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            // Tampilkan pertanyaan yang diminta
+            document.getElementById(`question-${questionNumber}`).classList.add('active');
+            
+            // Update progress bar
+            updateProgressBar(questionNumber);
+        }
+        
+        // Fungsi untuk mengupdate progress bar
+        function updateProgressBar(questionNumber) {
+            const progress = (questionNumber / 8) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+        
+        // Fungsi untuk menampilkan hasil
+        function displayResults() {
+            const resultContent = document.getElementById('result-content');
+            const recommendationContent = document.getElementById('recommendation-content');
+            const totalScore = answers.reduce((sum, answer) => sum + (answer || 0), 0);
+            const maxScore = 32; // 8 pertanyaan x 4 poin maksimal per pertanyaan
+            
+            let resultText = '';
+            let recommendationText = '';
+            
+            if (totalScore >= 25) {
+                resultText = `<div class="score-display">Skor Anda: ${totalScore}/${maxScore}</div>
+                            <p><strong>Tingkat Pengelolaan Diabetes: Sangat Baik</strong></p>
+                            <p>Selamat! Kebiasaan hidup sehat Anda dalam mengelola diabetes tergolong sangat baik. Anda telah menerapkan pola hidup yang mendukung pengendalian gula darah dan kesehatan secara keseluruhan.</p>`;
+                
+                recommendationText = `<h3>Rekomendasi untuk Anda:</h3>
+                                <ul>
+                                    <li>Pertahankan kebiasaan baik yang sudah Anda lakukan</li>
+                                    <li>Terus pantau kadar gula darah secara teratur</li>
+                                    <li>Jaga konsistensi dalam pola makan dan aktivitas fisik</li>
+                                    <li>Terus ikuti anjuran dari tim kesehatan Anda</li>
+                                    <li>Berbagi pengalaman positif dengan penderita diabetes lainnya</li>
+                                </ul>`;
+            } else if (totalScore >= 17) {
+                resultText = `<div class="score-display">Skor Anda: ${totalScore}/${maxScore}</div>
+                            <p><strong>Tingkat Pengelolaan Diabetes: Baik</strong></p>
+                            <p>Kebiasaan hidup sehat Anda dalam mengelola diabetes sudah baik, namun masih ada ruang untuk perbaikan. Beberapa aspek mungkin perlu lebih diperhatikan.</p>`;
+                
+                recommendationText = `<h3>Rekomendasi untuk Anda:</h3>
+                                <ul>
+                                    <li>Fokus pada area yang masih perlu ditingkatkan</li>
+                                    <li>Tingkatkan konsistensi dalam pemantauan gula darah</li>
+                                    <li>Perbaiki pola makan dengan lebih teratur</li>
+                                    <li>Tingkatkan frekuensi aktivitas fisik</li>
+                                    <li>Konsultasikan dengan ahli gizi untuk saran lebih lanjut</li>
+                                </ul>`;
+            } else if (totalScore >= 9) {
+                resultText = `<div class="score-display">Skor Anda: ${totalScore}/${maxScore}</div>
+                            <p><strong>Tingkat Pengelolaan Diabetes: Cukup</strong></p>
+                            <p>Pengelolaan diabetes Anda berada pada tingkat cukup. Beberapa kebiasaan sehat sudah diterapkan, namun masih banyak area yang perlu diperbaiki untuk hasil yang optimal.</p>`;
+                
+                recommendationText = `<h3>Rekomendasi untuk Anda:</h3>
+                                <ul>
+                                    <li>Buat rencana pengelolaan diabetes yang lebih terstruktur</li>
+                                    <li>Konsultasi dengan edukator diabetes untuk panduan</li>
+                                    <li>Tingkatkan frekuensi pemeriksaan kesehatan</li>
+                                    <li>Pelajari lebih lanjut tentang manajemen diabetes</li>
+                                    <li>Bergabung dengan komunitas diabetes untuk dukungan</li>
+                                </ul>`;
+            } else {
+                resultText = `<div class="score-display">Skor Anda: ${totalScore}/${maxScore}</div>
+                            <p><strong>Tingkat Pengelolaan Diabetes: Perlu Perhatian Serius</strong></p>
+                            <p>Berdasarkan jawaban Anda, pengelolaan diabetes memerlukan perhatian serius. Perubahan signifikan dalam gaya hidup dan kebiasaan kesehatan diperlukan.</p>`;
+                
+                recommendationText = `<h3>Rekomendasi untuk Anda:</h3>
+                                <ul>
+                                    <li>Segera konsultasi dengan dokter untuk evaluasi komprehensif</li>
+                                    <li>Ikuti program edukasi diabetes</li>
+                                    <li>Buat jadwal rutin untuk pemantauan gula darah</li>
+                                    <li>Konsultasi dengan ahli gizi untuk rencana makan</li>
+                                    <li>Cari dukungan dari keluarga dan teman</li>
+                                    <li>Pertimbangkan untuk bergabung dengan kelompok dukungan diabetes</li>
+                                </ul>`;
+            }
+            
+            // Analisis berdasarkan jawaban spesifik
+            let specificAdvice = '<h3>Area yang Perlu Diperhatikan:</h3><ul>';
+            
+            if (answers[0] <= 2) {
+                specificAdvice += '<li>Pemantauan gula darah yang lebih teratur</li>';
+            }
+            if (answers[1] <= 2) {
+                specificAdvice += '<li>Pengaturan konsumsi karbohidrat</li>';
+            }
+            if (answers[2] <= 2) {
+                specificAdvice += '<li>Peningkatan konsumsi serat dari sayur dan buah</li>';
+            }
+            if (answers[3] <= 2) {
+                specificAdvice += '<li>Penambahan aktivitas fisik rutin</li>';
+            }
+            if (answers[4] <= 2) {
+                specificAdvice += '<li>Pengelolaan stres yang lebih baik</li>';
+            }
+            if (answers[5] <= 2) {
+                specificAdvice += '<li>Keteraturan dalam mengonsumsi obat/insulin</li>';
+            }
+            if (answers[6] <= 2) {
+                specificAdvice += '<li>Pengelolaan berat badan</li>';
+            }
+            if (answers[7] <= 2) {
+                specificAdvice += '<li>Pemeriksaan kesehatan yang lebih rutin</li>';
+            }
+            
+            specificAdvice += '</ul>';
+            
+            resultContent.innerHTML = resultText + specificAdvice;
+            recommendationContent.innerHTML = recommendationText;
+        }
+        
+        // Event listener untuk tombol mulai
+        startBtn.addEventListener('click', () => {
+            showPage('questionnaire');
+        });
+        
+        // Event listener untuk tombol restart
+        restartBtn.addEventListener('click', () => {
+            // Reset jawaban
+            answers = [null, null, null, null, null, null, null, null];
+            
+            // Reset pilihan yang dipilih
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            showPage('intro');
+        });
+        
+        // Event listener untuk pilihan jawaban
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Hapus kelas selected dari semua opsi dalam container yang sama
+                const container = this.closest('.options-container');
+                container.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Tambahkan kelas selected ke opsi yang diklik
+                this.classList.add('selected');
+                
+                // Simpan jawaban
+                const questionContainer = this.closest('.question-container');
+                const questionId = questionContainer.id;
+                const questionNumber = parseInt(questionId.split('-')[1]) - 1;
+                answers[questionNumber] = parseInt(this.getAttribute('data-value'));
+            });
+        });
+        
+        // Event listener untuk navigasi pertanyaan
+        for (let i = 1; i <= 8; i++) {
+            // Tombol next
+            if (i < 8) {
+                document.getElementById(`next-btn-${i}`).addEventListener('click', () => {
+                    if (answers[i-1] !== null) {
+                        showQuestion(i+1);
+                    } else {
+                        alert('Silakan pilih jawaban sebelum melanjutkan.');
+                    }
+                });
+            } else {
+                // Tombol submit untuk pertanyaan terakhir
+                document.getElementById('submit-btn').addEventListener('click', () => {
+                    if (answers[7] !== null) {
+                        showPage('result');
+                    } else {
+                        alert('Silakan pilih jawaban sebelum melihat hasil.');
+                    }
+                });
+            }
+            
+            // Tombol previous
+            document.getElementById(`prev-btn-${i}`).addEventListener('click', () => {
+                if (i === 1) {
+                    showPage('intro');
+                } else {
+                    showQuestion(i-1);
+                }
+            });
+        }
+        
+        // Inisialisasi halaman intro
+        showPage('intro');
+    </script>
+</body>
+</html>
