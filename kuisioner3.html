@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuesioner Kesehatan Mental</title>
+    <style>
+        /* CSS Styling - Palet warna menenangkan (biru soft) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4a90e2;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #4a90e2;
+            transition: width 0.3s ease;
+        }
+
+        .question {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            text-align: left;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            transition: border-color 0.2s;
+        }
+
+        .option:hover {
+            border-color: #4a90e2;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            flex: 1;
+        }
+
+        .btn-prev {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-prev:hover:not(:disabled) {
+            background-color: #5a6268;
+        }
+
+        .btn-next {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        .btn-next:hover:not(:disabled) {
+            background-color: #357abd;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results {
+            padding: 20px;
+            text-align: left;
+        }
+
+        .score {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .disorder-result {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #4a90e2;
+        }
+
+        .disorder-name {
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 8px;
+        }
+
+        .disorder-score {
+            font-weight: normal;
+            color: #666;
+        }
+
+        .interpretation {
+            background-color: #e7f3ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .advice {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .btn-reset {
+            background-color: #28a745;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-reset:hover {
+            background-color: #218838;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            .question {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <h1>Kuesioner Kesehatan Mental</h1>
+        <p id="question-counter">Pertanyaan 1 dari 49</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill" style="width: 2.04%;"></div>
+        </div>
+
+        <div id="question-section">
+            <div class="question" id="current-question"></div>
+            <div class="options">
+                <label class="option">
+                    <input type="radio" name="answer" value="0"> Tidak pernah
+                </label>
+                <label class="option">
+                    <input type="radio" name="answer" value="1"> Jarang
+                </label>
+                <label class="option">
+                    <input type="radio" name="answer" value="2"> Kadang-kadang
+                </label>
+                <label class="option">
+                    <input type="radio" name="answer" value="3"> Sering
+                </label>
+                <label class="option">
+                    <input type="radio" name="answer" value="4"> Selalu
+                </label>
+            </div>
+            <div class="navigation">
+                <button class="btn-prev" id="btn-prev" onclick="prevQuestion()" disabled>Sebelumnya</button>
+                <button class="btn-next" id="btn-next" onclick="nextQuestion()">Selanjutnya</button>
+            </div>
+        </div>
+
+        <div id="results-section" style="display: none;">
+            <div class="score" id="total-score">Hasil Kuesioner Kesehatan Mental</div>
+            
+            <div class="results" id="results-container">
+                <!-- Hasil akan ditampilkan di sini -->
+            </div>
+            
+            <div class="interpretation">
+                <h3>Interpretasi:</h3>
+                <p>Hasil ini menunjukkan kecenderungan gejala untuk setiap gangguan mental berdasarkan jawaban Anda. Semakin tinggi skor untuk suatu gangguan, semakin besar kemungkinan Anda mengalami gejala gangguan tersebut.</p>
+            </div>
+            
+            <div class="advice">
+                <h3>Saran:</h3>
+                <p>Hasil ini bukan diagnosis medis. Jika Anda merasa membutuhkan bantuan atau memiliki skor tinggi pada salah satu gangguan, silakan hubungi profesional kesehatan mental atau layanan konseling untuk evaluasi lebih lanjut.</p>
+            </div>
+            
+            <button class="btn-reset" onclick="resetQuestionnaire()">Isi Kuesioner Lagi</button>
+        </div>
+    </div>
+
+    <script>
+        // Data pertanyaan berdasarkan manifestasi
+        const questions = [
+            "Kehilangan minat atau kesenangan selama lebih dari 3 bulan",
+            "Suasana hati depresif",
+            "Kelelahan atau kehilangan energi selama lebih dari 1 bulan",
+            "Perasaan tidak berharga atau bersalah berlebihan",
+            "Kesulitan berkonsentrasi dan membuat Keputusan",
+            "Perubahan berat badan dan nafsu makan",
+            "Insomnia atau hypersomnia setiap hari",
+            "Ketakutan atau kecemasan yang signifikan terhadap satu atau lebih situasi sosial",
+            "Takut bertindak dengan cara yang akan dievaluasi negatif",
+            "Menghindari situasi sosial",
+            "Ketakutan, kecemasan, atau penghindaran berlangsung selama enam bulan atau lebih",
+            "Ketakutan atau kecemasan tidak sebanding dengan ancaman nyata",
+            "Kecemasan dan kekhawatiran yang berlebihan",
+            "Kesulitan mengendalikan kecemasan",
+            "Gelisah atau perasaan tegang",
+            "Kesulitan berkonsentrasi atau pikiran kosong",
+            "Mudah tersinggung atau mudah marah",
+            "Ketegangan otot",
+            "Gangguan tidur",
+            "Kelelahan yang berlebihan",
+            "Kesulitan untuk rileks",
+            "Mengalami atau menyaksikan peristiwa traumatic",
+            "Mimpi buruk yang menganggu berulang kali",
+            "Muncul pikiran atau ingatan yang tidak diinginkan secara tiba-tiba",
+            "Flashback dengan peristiwa traumatis",
+            "Upaya menghindari pengingatan tentang peristiwa",
+            "Kehilangan minat",
+            "Pemikiran atau perasaan negatif yang berkepanjangan",
+            "Kesulitan tidur",
+            "Marah yang tidak terkendali",
+            "Kesulitan mempertahankan fokus dalam aktivitas",
+            "Mudah teralihkan oleh rangsangan eksternal",
+            "Kesulitan dalam merencanakan dan menyelesaikan aktivitas",
+            "Kesulitan dalam mengikuti instruksi",
+            "Menghindari aktivitas yang memerlukan pemikiran mental",
+            "Sering kehilangan benda-benda penting",
+            "Mudah melupakan aktivitas sehari-hari",
+            "Sering bergerak dan tidak bisa diam",
+            "Selalu terburu-buru",
+            "Kesulitan dalam menunggu",
+            "Sering menganggu orang lain",
+            "Terlalu banyak bicara",
+            "Selalu menyela percakapan orang lain",
+            "Menentang atau menolak aturan",
+            "Kesulitan mengendalikan emosi",
+            "Sering balas dendam",
+            "Sering menyalahkan orang lain",
+            "Menganggu orang lain dengan sengaja",
+            "Merasa marah dan terganggu secara berlebihan"
+        ];
+
+        // Mapping pertanyaan ke gangguan
+        const questionToDisorder = {
+            // Gangguan Depresi Berat (G06) - M001 s/d M007
+            0: "G06", 1: "G06", 2: "G06", 3: "G06", 4: "G06", 5: "G06", 6: "G06",
+            
+            // Gangguan Kecemasan Sosial (G05) - M008 s/d M012
+            7: "G05", 8: "G05", 9: "G05", 10: "G05", 11: "G05",
+            
+            // Gangguan Kecemasan Umum (G04) - M013 s/d M021
+            12: "G04", 13: "G04", 14: "G04", 15: "G04", 16: "G04", 
+            17: "G04", 18: "G04", 19: "G04", 20: "G04",
+            
+            // Gangguan Stress Akibat Trauma (G03) - M022 s/d M031
+            21: "G03", 22: "G03", 23: "G03", 24: "G03", 25: "G03",
+            26: "G03", 27: "G03", 28: "G03", 29: "G03", 30: "G03",
+            
+            // Gangguan Pemusatan Perhatian (G02) - M032 s/d M043
+            31: "G02", 32: "G02", 33: "G02", 34: "G02", 35: "G02", 36: "G02",
+            37: "G02", 38: "G02", 39: "G02", 40: "G02", 41: "G02", 42: "G02",
+            
+            // Gangguan Oposisi (G01) - M044 s/d M049
+            43: "G01", 44: "G01", 45: "G01", 46: "G01", 47: "G01", 48: "G01"
+        };
+
+        // Nama gangguan
+        const disorderNames = {
+            "G01": "Gangguan Oposisi",
+            "G02": "Gangguan Pemusatan Perhatian",
+            "G03": "Gangguan Stress Akibat Trauma",
+            "G04": "Gangguan Kecemasan Umum",
+            "G05": "Gangguan Kecemasan Sosial",
+            "G06": "Gangguan Depresi Berat"
+        };
+
+        // Threshold untuk setiap gangguan
+        const disorderThresholds = {
+            "G01": 15, // Gangguan Oposisi
+            "G02": 20, // Gangguan Pemusatan Perhatian
+            "G03": 20, // Gangguan Stress Akibat Trauma
+            "G04": 20, // Gangguan Kecemasan Umum
+            "G05": 15, // Gangguan Kecemasan Sosial
+            "G06": 15  // Gangguan Depresi Berat
+        };
+
+        let currentQuestion = 0;
+        let answers = new Array(questions.length).fill(null);
+
+        // Update tampilan pertanyaan
+        function updateQuestion() {
+            document.getElementById('current-question').textContent = questions[currentQuestion];
+            document.getElementById('question-counter').textContent = `Pertanyaan ${currentQuestion + 1} dari ${questions.length}`;
+            document.getElementById('progress-fill').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+
+            // Reset radio buttons dan set yang dipilih
+            const radios = document.querySelectorAll('input[name="answer"]');
+            radios.forEach(radio => {
+                radio.checked = false;
+                if (parseInt(radio.value) === answers[currentQuestion]) {
+                    radio.checked = true;
+                }
+            });
+
+            // Update tombol navigasi
+            document.getElementById('btn-prev').disabled = currentQuestion === 0;
+            const hasAnswer = answers[currentQuestion] !== null;
+            document.getElementById('btn-next').textContent = currentQuestion === questions.length - 1 ? 'Selesai' : 'Selanjutnya';
+            document.getElementById('btn-next').disabled = !hasAnswer;
+        }
+
+        // Event listener untuk radio buttons
+        document.querySelectorAll('input[name="answer"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                answers[currentQuestion] = parseInt(this.value);
+                updateQuestion(); // Update tombol next
+            });
+        });
+
+        // Fungsi next question
+        function nextQuestion() {
+            if (answers[currentQuestion] !== null) {
+                if (currentQuestion < questions.length - 1) {
+                    currentQuestion++;
+                    updateQuestion();
+                } else {
+                    calculateResults();
+                }
+            }
+        }
+
+        // Fungsi previous question
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                updateQuestion();
+            }
+        }
+
+        // Hitung hasil
+        function calculateResults() {
+            // Inisialisasi skor untuk setiap gangguan
+            const disorderScores = {
+                "G01": 0,
+                "G02": 0,
+                "G03": 0,
+                "G04": 0,
+                "G05": 0,
+                "G06": 0
+            };
+
+            // Hitung skor untuk setiap gangguan
+            for (let i = 0; i < answers.length; i++) {
+                const answer = answers[i] || 0;
+                const disorderCode = questionToDisorder[i];
+                disorderScores[disorderCode] += answer;
+            }
+
+            // Tampilkan hasil
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.innerHTML = '';
+
+            for (const disorderCode in disorderScores) {
+                const score = disorderScores[disorderCode];
+                const threshold = disorderThresholds[disorderCode];
+                const percentage = Math.min(100, Math.round((score / threshold) * 100));
+                
+                const resultElement = document.createElement('div');
+                resultElement.className = 'disorder-result';
+                
+                let interpretation = '';
+                if (percentage < 50) {
+                    interpretation = 'Rendah';
+                } else if (percentage < 75) {
+                    interpretation = 'Sedang';
+                } else {
+                    interpretation = 'Tinggi';
+                }
+                
+                resultElement.innerHTML = `
+                    <div class="disorder-name">${disorderNames[disorderCode]} <span class="disorder-score">(Skor: ${score}/${threshold})</span></div>
+                    <div>Kecenderungan: ${interpretation}</div>
+                    <div class="progress-bar" style="margin: 8px 0; height: 6px;">
+                        <div class="progress-fill" style="width: ${percentage}%; background-color: ${percentage < 50 ? '#28a745' : percentage < 75 ? '#ffc107' : '#dc3545'};"></div>
+                    </div>
+                `;
+                
+                resultsContainer.appendChild(resultElement);
+            }
+
+            document.getElementById('question-section').style.display = 'none';
+            document.getElementById('results-section').style.display = 'block';
+        }
+
+        // Reset kuesioner
+        function resetQuestionnaire() {
+            currentQuestion = 0;
+            answers = new Array(questions.length).fill(null);
+            document.getElementById('question-section').style.display = 'block';
+            document.getElementById('results-section').style.display = 'none';
+            updateQuestion();
+        }
+
+        // Inisialisasi aplikasi
+        updateQuestion();
+    </script>
+</body>
+</html>
